@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import useEventSource from '@/lib/useEventSource';
 import useDevices from '@/lib/useDevices';
-import Switch from '@/components/Switch';
+import Device from '@/components/devices';
+import { Payload } from '@/lib/useEventSource';
 
 export default function Page() {
   const { devices, deviceCategories, updateDeviceStatus } = useDevices();
@@ -13,7 +14,7 @@ export default function Page() {
     console.log('Connected to Tuya SSE');
   }
 
-  const onMessage = (event: MessageEvent) => {
+  const onMessage = (event: Payload): void => {
     console.log(event);
     const { devId } = event.data;
     const { code, value } = event.data.status[0];
@@ -38,15 +39,13 @@ export default function Page() {
               <p className='text-sm'>Category: {deviceCategories[device.category] || device.category}</p>
             </div>
 
-            {['kg', 'tdq'].includes(device.category) && (
-              <Switch device={device} />
-            )}
+            <Device device={device} />
           </li>
         ))}
       </ul>
 
-      {/* <pre>{JSON.stringify(devices, null, 2)}</pre> */}
-      {/* <pre>{JSON.stringify(deviceCategories, null, 2)}</pre> */}
+      <pre>{JSON.stringify(devices, null, 2)}</pre>
+      <pre>{JSON.stringify(deviceCategories, null, 2)}</pre>
     </div>
   );
 }

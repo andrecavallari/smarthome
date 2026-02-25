@@ -6,7 +6,7 @@ interface UseEventSourceProps {
   onError?: (error: unknown) => void;
 }
 
-interface Payload {
+export interface Payload {
   data: {
     dataId: string;
     devId: string;

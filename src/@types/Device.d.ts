@@ -1,3 +1,8 @@
+interface DeviceStatus {
+  code: string;
+  value: boolean | number | string;
+}
+
 interface Device {
   id: string;
   name: string;
@@ -11,8 +16,5 @@ interface Device {
   owner_id: string;
   product_id: string;
   product_name: string;
-  status: {
-    code: string;
-    value: boolean | number | string;
-  }[];
+  status: DeviceStatus[];
 }

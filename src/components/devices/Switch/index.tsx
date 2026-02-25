@@ -5,14 +5,14 @@ import { setSwitchState } from '@/actions/tuya';
 import { useState } from 'react';
 
 interface SwitchProps {
-  device: Record<string, any>;
+  device: Device;
 }
 
 export default function Switch({ device }: SwitchProps) {
-  const [loading, setLoading] = useState(null);
-  const switches = device.status.filter((status) => status.code.match(/switch_\d+/));
+  const [loading, setLoading] = useState<string | null>(null);
+  const switches = device.status.filter((status: DeviceStatus) => status.code.match(/switch_\d+/));
 
-  const handleToggle = async (switchCode) => {
+  const handleToggle = async (switchCode: string) => {
     try {
       const currentStatus = switches.find((s) => s.code === switchCode)?.value;
       setLoading(switchCode);
