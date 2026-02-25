@@ -27,7 +27,7 @@ export default function Page() {
       <h1 className="text-2xl">Smart Home Management</h1>
       <p>This is the main dashboard for managing your smart home devices.</p>
 
-      <ul className="grid grid-cols-1 md:grid-cols-4 gap-4 mx-auto mt-12 mb-12">
+      <ul className="grid grid-cols-2 md:grid-cols-4 gap-3 mx-auto mt-12 mb-12">
         {devices.map((device) => (
           <li key={device.id} className="border border-gray-300 rounded-lg p-4 text-gray-700 shadow-xl">
             <div className="flex justify-center">
@@ -45,7 +45,7 @@ export default function Page() {
         ))}
       </ul>
 
-      <pre>{JSON.stringify(devices, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(devices, null, 2)}</pre> */}
       {/* <pre>{JSON.stringify(deviceCategories, null, 2)}</pre> */}
     </div>
   );
