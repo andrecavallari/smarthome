@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface UseEventSourceProps {
   onMessage: (data: Payload) => void;
@@ -15,20 +15,25 @@ export interface Payload {
 }
 
 export default function useEventSource({ onMessage, onConnect, onError }: UseEventSourceProps) {
+  const onMessageRef = useRef(onMessage);
+  const onConnectRef = useRef(onConnect);
+  const onErrorRef = useRef(onError);
+
+  useEffect(() => {
+    onMessageRef.current = onMessage;
+    onConnectRef.current = onConnect;
+    onErrorRef.current = onError;
+  }, [onMessage, onConnect, onError]);
+
   useEffect(() => {
     const es = new window.EventSource('/api/tuya');
 
     es.onopen = (msg) => {
       console.log('SSE connection opened', msg);
-      if (onConnect) {
-        onConnect();
-      }
     };
 
     es.onerror = (error) => {
-      if (onError) {
-        onError(error);
-      }
+      onErrorRef.current?.(error);
     };
 
     es.onmessage = (event) => {
@@ -36,13 +41,13 @@ export default function useEventSource({ onMessage, onConnect, onError }: UseEve
 
       switch (data.type) {
         case 'connected':
-          if (onConnect) onConnect();
+          onConnectRef.current?.();
           break;
         case 'message':
-          onMessage(data.payload);
+          onMessageRef.current(data.payload);
           break;
         case 'error':
-          if (onError) onError(data.message);
+          onErrorRef.current?.(data.message);
           break;
       }
     }
@@ -50,5 +55,5 @@ export default function useEventSource({ onMessage, onConnect, onError }: UseEve
     return () => {
       es.close();
     };
-  }, [onMessage, onConnect, onError]);
+  }, []);
 }

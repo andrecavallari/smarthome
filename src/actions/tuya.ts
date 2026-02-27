@@ -3,7 +3,7 @@
 import tuya from '@/clients/tuya';
 
 export async function getDevices(): Promise<Device[]> {
-  const devices = await tuya.request({
+  const devices = await tuya.request<Promise<Device[]>>({
     method: 'GET',
     path:  `/v1.0/users/${process.env.TUYA_USER_ID}/devices`
   });
@@ -12,7 +12,7 @@ export async function getDevices(): Promise<Device[]> {
 }
 
 export async function listDeviceCategories(): Promise<Record<string, string>> {
-  const categories = await tuya.request({
+  const categories = await tuya.request<Promise<{ code: string; name: string }[]>>({
     method: 'GET',
     path: `/v1.0/iot-03/device-categories`
   });
@@ -23,7 +23,7 @@ export async function listDeviceCategories(): Promise<Record<string, string>> {
 }
 
 export async function getDeviceStatus(deviceId: string): Promise<{ code: string; value: boolean | number | string }[]> {
-  const response = await tuya.request({
+  const response = await tuya.request<Promise<{ code: string; value: boolean | number | string }[]>>  ({
     method: 'GET',
     path: `/v1.0/iot-03/devices/${deviceId}/status`
   });
@@ -34,6 +34,8 @@ export async function getDeviceStatus(deviceId: string): Promise<{ code: string;
 export interface SetSwitchStateResult {
   result: boolean;
   success: boolean;
+  t: number;
+  tid: string;
 }
 
 export async function setSwitchState(deviceId: string, switchId: string, value: boolean): Promise<SetSwitchStateResult> {
@@ -48,10 +50,33 @@ export async function setSwitchState(deviceId: string, switchId: string, value: 
         }
       ]
     }
-  });
+  }) as unknown as SetSwitchStateResult;
 
   return {
     result: response.result,
-    success: response.success
-  } as SetSwitchStateResult;
+    success: response.success,
+    t: response.t,
+    tid: response.tid
+  };
+}
+
+export async function getHomes() {
+  return tuya.request({
+    method: 'GET',
+    path: `/v1.0/users/${process.env.TUYA_USER_ID}/homes`
+  });
+}
+
+export async function listRooms() {
+  return tuya.request({
+    method: 'GET',
+    path: `/v1.0/homes/${process.env.TUYA_HOME_ID}/rooms`
+  })
+}
+
+export async function listRoomDevices(roomId: string) {
+  return tuya.request({
+    method: 'GET',
+    path: `/v1.0/homes/${process.env.TUYA_HOME_ID}/rooms/${roomId}/devices`
+  });
 }
