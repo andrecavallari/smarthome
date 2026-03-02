@@ -28,13 +28,9 @@ export default function useEventSource({ onMessage, onConnect, onError }: UseEve
   useEffect(() => {
     const es = new window.EventSource('/api/tuya');
 
-    es.onopen = (msg) => {
-      console.log('SSE connection opened', msg);
-    };
+    es.onopen = (msg) => console.log('SSE connection opened', msg);
 
-    es.onerror = (error) => {
-      onErrorRef.current?.(error);
-    };
+    es.onerror = (error) => onErrorRef.current?.(error);
 
     es.onmessage = (event) => {
       const data = JSON.parse(event.data);
