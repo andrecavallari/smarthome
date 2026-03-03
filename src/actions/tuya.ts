@@ -1,6 +1,7 @@
 'use server';
 
 import tuya from '@/clients/tuya';
+import { TuyaResponse } from '@tuya/tuya-connector-nodejs';
 
 export async function getDevices(): Promise<Device[]> {
   const devices = await tuya.request<Promise<Device[]>>({
@@ -78,5 +79,19 @@ export async function listRoomDevices(roomId: string) {
   return tuya.request({
     method: 'GET',
     path: `/v1.0/homes/${process.env.TUYA_HOME_ID}/rooms/${roomId}/devices`
+  });
+}
+
+export async function listScenes(): Promise<TuyaResponse<{ success: boolean; result: Scene[] }>> {
+  return tuya.request({
+    method: 'GET',
+    path: `/v1.1/homes/${process.env.TUYA_HOME_ID}/scenes`
+  });
+}
+
+export async function activateScene(sceneId: string) {
+  return tuya.request({
+    method: 'POST',
+    path: `/v1.0/homes/${process.env.TUYA_HOME_ID}/scenes/${sceneId}/trigger`
   });
 }

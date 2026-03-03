@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
-import { getDevices, listDeviceCategories } from '@/actions/tuya';
+import { getDevices, listDeviceCategories, listScenes } from '@/actions/tuya';
 
-export default function useDevices() {
+export default function useTuya() {
   const [devices, setDevices] = useState<Device[]>([]);
   const [deviceCategories, setDeviceCategories] = useState<Record<string, string>>({});
+  const [scenes, setScenes] = useState<Scene[]>([]);
 
   const reload = async () => {
-    const [devices, categories] = await Promise.all([
+    const [devices, categories, scenes] = await Promise.all([
       getDevices(),
-      listDeviceCategories()
+      listDeviceCategories(),
+      listScenes()
     ]);
 
     setDevices(devices);
     setDeviceCategories(categories);
+    setScenes(Array.isArray(scenes.result) ? scenes.result : []);
   }
 
   const updateDeviceStatus = (deviceId: string, deviceCode: string, value: boolean | number | string) => {
@@ -39,5 +42,5 @@ export default function useDevices() {
     fetchData();
   }, []);
 
-  return { devices, deviceCategories, reload, updateDeviceStatus };
+  return { devices, deviceCategories, reload, updateDeviceStatus, scenes };
 }
