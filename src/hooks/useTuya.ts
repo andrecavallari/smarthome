@@ -22,7 +22,7 @@ export default function useTuya() {
     setDevices((prevDevices) => {
       return prevDevices.map((device) => {
         if (device.id === deviceId) {
-          const updatedStatus = device.status.map((status) => {
+          const updatedStatus = device.status?.map((status) => {
             if (status.code === deviceCode) {
               return { ...status, value };
             }

@@ -1,6 +1,6 @@
 declare module 'crypto-js' {
   export interface WordArray {
-    toString(encoder?: any): string;
+    toString(encoder?: Encoder): string;
   }
 
   export interface CipherParams {
@@ -12,9 +12,17 @@ declare module 'crypto-js' {
     stringify(wordArray: WordArray): string;
   }
 
+  export interface CipherMode {
+    [key: string]: unknown;
+  }
+
+  export interface CipherPadding {
+    [key: string]: unknown;
+  }
+
   export interface CipherOption {
-    mode?: any;
-    padding?: any;
+    mode?: CipherMode;
+    padding?: CipherPadding;
     iv?: WordArray;
   }
 
@@ -25,13 +33,13 @@ declare module 'crypto-js' {
   }
 
   export namespace mode {
-    export const ECB: any;
-    export const CBC: any;
+    export const ECB: CipherMode;
+    export const CBC: CipherMode;
   }
 
   export namespace pad {
-    export const Pkcs7: any;
-    export const NoPadding: any;
+    export const Pkcs7: CipherPadding;
+    export const NoPadding: CipherPadding;
   }
 
   export namespace AES {
