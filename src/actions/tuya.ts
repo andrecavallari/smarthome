@@ -95,3 +95,10 @@ export async function activateScene(sceneId: string) {
     path: `/v1.0/homes/${process.env.TUYA_HOME_ID}/scenes/${sceneId}/trigger`
   });
 }
+
+export async function listAutomations() {
+  return tuya.request({
+    method: 'GET',
+    path: `/v1.0/homes/${process.env.TUYA_HOME_ID}/automations`
+  });
+}
