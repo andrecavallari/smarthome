@@ -6,6 +6,23 @@ export async function register() {
     const { activateScene } = await import('@/actions/tuya');
     mqttManager.connect();
 
+    mqttManager.subscribe('devices/connected', async (topic, payload) => {
+      console.log(`[${topic}]`, payload);
+
+      try {
+        const { default: db } = await import('@/clients/db');
+        const { deviceId, type } = JSON.parse(payload);
+
+        const exists = await db('controllers').where({ deviceId }).first();
+        if (!exists) {
+          await db('controllers').insert({ deviceId, type, name: deviceId });
+          console.log(`Controller saved: ${deviceId} (${type})`);
+        }
+      } catch (err) {
+        console.error('Failed to save controller:', err);
+      }
+    });
+
     mqttManager.subscribe('rf/received', async (topic, payload) => {
       console.log(`[${topic}]`, payload);
       const scene = rfSceneLink.find(item => item.code === payload);

@@ -142,5 +142,6 @@ class MqttManager {
   }
 }
 
-const mqttManager = new MqttManager();
+const globalForMqtt = globalThis as unknown as { __mqttManager?: MqttManager };
+const mqttManager = globalForMqtt.__mqttManager ?? (globalForMqtt.__mqttManager = new MqttManager());
 export default mqttManager;
