@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import Event from 'events';
-import WebSocket from 'ws';
+import WebSocket, { RawData } from 'ws';
 
 import { TUYA_PASULAR_ENV, getTuyaEnvConfig, TuyaRegionConfigEnum } from './config';
 import { getTopicUrl, buildQuery, buildPassword, decrypt } from './utils';
@@ -16,7 +15,7 @@ interface IConfig {
   timeout?: number;
   maxRetryTimes?: number;
   retryTimeout?: number;
-  logger?: (level: LoggerLevel, ...args: any) => void;
+  logger?: (level: LoggerLevel, ...args: unknown[]) => void;
 }
 
 class TuyaMessageSubscribeWebsocket {
@@ -33,7 +32,7 @@ class TuyaMessageSubscribeWebsocket {
 
   private config: IConfig;
   private server?: WebSocket;
-  private timer: any;
+  private timer: ReturnType<typeof setTimeout> | undefined;
   private retryTimes: number;
   private event: Event;
 
@@ -61,7 +60,7 @@ class TuyaMessageSubscribeWebsocket {
     this.event.on(TuyaMessageSubscribeWebsocket.open, cb);
   }
 
-  public message(cb: (ws: WebSocket, message: any) => void) {
+  public message(cb: (ws: WebSocket, message: unknown) => void) {
     this.event.on(TuyaMessageSubscribeWebsocket.data, cb);
   }
 
@@ -78,10 +77,12 @@ class TuyaMessageSubscribeWebsocket {
   }
 
   public ackMessage(messageId: string) {
-    this.server && this.server.send(JSON.stringify({ messageId }));
+    if (this.server) {
+      this.server.send(JSON.stringify({ messageId }));
+    }
   }
 
-  public error(cb: (ws: WebSocket, error: any) => void) {
+  public error(cb: (ws: WebSocket, error: unknown) => void) {
     this.event.on(TuyaMessageSubscribeWebsocket.error, cb);
   }
 
@@ -151,12 +152,12 @@ class TuyaMessageSubscribeWebsocket {
   }
 
   private subMessage(server: WebSocket) {
-    server.on('message', (data: any) => {
+    server.on('message', (data: RawData) => {
       try {
         this.keepAlive(server);
         const start = Date.now();
         this.logger('INFO', `receive msg, jsonMessage=${data}`);
-        const obj = this.handleMessage(data);
+        const obj = this.handleMessage(data.toString());
         this.logger('INFO', 'the real message data:', obj);
         this.event.emit(TuyaMessageSubscribeWebsocket.data, this.server, obj);
         const end = Date.now();
@@ -202,9 +203,11 @@ class TuyaMessageSubscribeWebsocket {
     return { payload: pJson, ...others };
   }
 
-  private logger(level: LoggerLevel, ...info: any) {
+  private logger(level: LoggerLevel, ...info: unknown[]) {
     const realInfo = `${Date.now()} `;
-    this.config.logger && this.config.logger(level, realInfo, ...info);
+    if (this.config.logger) {
+      this.config.logger(level, realInfo, ...info);
+    }
   }
 }
 

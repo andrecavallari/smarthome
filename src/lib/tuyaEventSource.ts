@@ -3,9 +3,9 @@ export default function tuyaEventSource({
   onConnect,
   onerror
 }: {
-  onMessage: (data: any) => void;
+  onMessage: (data: unknown) => void;
   onConnect?: () => void;
-  onerror?: (error: any) => void;
+  onerror?: (error: unknown) => void;
 }) {
   const es = new EventSource('/api/tuya');
 

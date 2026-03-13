@@ -19,7 +19,7 @@ function decryptByECB(data: string, accessKey: string) {
     const realKey = enc.Utf8.parse(accessKey.substring(8, 24));
     const json = AES.decrypt(data, realKey, { mode: mode.ECB, padding: pad.Pkcs7 });
     return JSON.parse(enc.Utf8.stringify(json));
-  } catch (e) {
+  } catch {
     return '';
   }
 }
@@ -35,7 +35,7 @@ function decryptByGCM(data: string, accessKey: string) {
     let dataStr = decipher.update(cdata).toString('utf8');
     dataStr += decipher.final('utf8');
     return JSON.parse(dataStr);
-  } catch (e) {
+  } catch {
     return '';
   }
 }

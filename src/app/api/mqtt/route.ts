@@ -2,12 +2,13 @@ import mqttManager from '@/clients/mqtt';
 
 export async function GET() {
   let unsubscribe: () => void;
+  const encoder = new TextEncoder();
 
   const stream = new ReadableStream({
     start(controller) {
       unsubscribe = mqttManager.addSSEClient((data) => {
         try {
-          controller.enqueue(data);
+          controller.enqueue(encoder.encode(data));
         } catch {
           unsubscribe?.();
         }

@@ -1,8 +1,6 @@
 'use client';
 
 import { JSX } from "react";
-import { Pointer } from 'lucide-react';
-import { setSwitchState } from '@/actions/tuya';
 
 interface Input {
   device: Device;
