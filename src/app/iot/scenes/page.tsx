@@ -1,26 +1,6 @@
 'use client';
 
-import Image from 'next/image';
-import useEventSource from '@/hooks/useEventSource';
 import useTuya from '@/hooks/useTuya';
-import useControllers from '@/hooks/useControllers';
-import Device from '@/components/devices';
-import { rfSceneLink } from '@/config/rfSceneLink';
-
-interface TuyaEvent {
-  payload: {
-    data: {
-      devId: string;
-      status: { code: string; value: boolean | number | string }[];
-    };
-  };
-}
-
-interface MqttEvent {
-  type: string;
-  topic: string;
-  payload: number | string | boolean;
-}
 
 export default function Page() {
   const { scenes } = useTuya();
@@ -30,7 +10,7 @@ export default function Page() {
       <h3 className="mt-12 text-2xl border-b border-b-gray-300 pb-4">Scenes</h3>
       <ul className="grid grid-cols-2 md:grid-cols-3 gap-3 mx-auto mt-8 mb-12">
         {scenes.map((scene) => (
-          <li key={scene.scene_id} className="border border-gray-300 rounded-lg p-4 text-gray-700 shadow-xl">
+          <li key={scene.scene_id} className="border border-gray-300 bg-white rounded-lg p-4 text-gray-700 shadow-xl">
             <div className="min-h-16">
               <h3 className="text-sm font-bold">{scene.name}</h3>
               <p className='text-sm'>Scene ID: {scene.scene_id}</p>
