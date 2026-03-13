@@ -34,7 +34,7 @@ export default function Page() {
       <Title>Devices</Title>
       <ul className="grid grid-cols-2 md:grid-cols-4 gap-3 mx-auto mt-8 mb-12">
         {devices.map((device) => (
-          <li key={device.id} className="border border-gray-300 rounded-lg p-4 text-gray-700 shadow-xl">
+          <li key={device.id} className="border border-gray-300 rounded-lg p-4 text-gray-700 shadow-xl bg-white">
             <div className="flex justify-center">
               <Image src={`${tuyabaseImageUrl}/${device.icon}`} alt={device.name} width={64} height={64} />
             </div>
